@@ -1,0 +1,957 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jeremy Mattathias Mboe : AI Engineer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --bg: #05060f;
+    --bg2: #0b0d1a;
+    --bg3: #10132a;
+    --accent: #00d4ff;
+    --accent2: #7b4fff;
+    --accent3: #ff4f9b;
+    --text: #e8eaf6;
+    --text-muted: #7b82a8;
+    --border: rgba(0,212,255,0.12);
+    --glow: rgba(0,212,255,0.25);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    line-height: 1.7;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── GRID BACKGROUND ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(0,212,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,212,255,0.03) 1px, transparent 1px);
+    background-size: 48px 48px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ── SCANLINE ── */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: repeating-linear-gradient(
+      to bottom,
+      transparent 0px,
+      transparent 3px,
+      rgba(0,0,0,0.07) 3px,
+      rgba(0,0,0,0.07) 4px
+    );
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ── AMBIENT BLOBS ── */
+  .blob {
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(120px);
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.35;
+  }
+  .blob-1 { width: 500px; height: 500px; background: var(--accent2); top: -200px; left: -150px; }
+  .blob-2 { width: 400px; height: 400px; background: var(--accent); bottom: -100px; right: -100px; }
+  .blob-3 { width: 300px; height: 300px; background: var(--accent3); top: 40%; left: 50%; }
+
+  /* ── LAYOUT ── */
+  .wrapper {
+    position: relative;
+    z-index: 1;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px 80px;
+  }
+
+  /* ── HEADER ── */
+  header {
+    display: grid;
+    grid-template-columns: 180px 1fr;
+    gap: 40px;
+    align-items: end;
+    padding: 64px 0 48px;
+    border-bottom: 1px solid var(--border);
+    opacity: 0;
+    transform: translateY(24px);
+    animation: fadeUp 0.8s ease forwards 0.1s;
+  }
+
+  .avatar-wrap {
+    position: relative;
+    width: 160px;
+    height: 160px;
+    flex-shrink: 0;
+  }
+  .avatar-wrap::before {
+    content: '';
+    position: absolute;
+    inset: -3px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2), var(--accent3));
+    z-index: -1;
+    animation: borderSpin 6s linear infinite;
+  }
+  @keyframes borderSpin {
+    0%   { filter: hue-rotate(0deg); }
+    100% { filter: hue-rotate(360deg); }
+  }
+  .avatar-wrap img {
+    width: 160px;
+    height: 160px;
+    object-fit: cover;
+    border-radius: 10px;
+    display: block;
+    background: var(--bg3);
+  }
+  /* Placeholder when no real image */
+  .avatar-placeholder {
+    width: 160px;
+    height: 160px;
+    border-radius: 10px;
+    background: var(--bg3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-muted);
+    font-size: 11px;
+    text-align: center;
+    letter-spacing: 0.05em;
+    border: 1px solid var(--border);
+    flex-direction: column;
+    gap: 8px;
+  }
+  .avatar-placeholder svg { opacity: 0.4; }
+
+  .header-text {}
+  .label {
+    font-size: 10px;
+    letter-spacing: 0.25em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .label::before {
+    content: '';
+    display: inline-block;
+    width: 20px;
+    height: 1px;
+    background: var(--accent);
+  }
+
+  h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(32px, 5vw, 56px);
+    font-weight: 800;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    color: var(--text);
+  }
+  h1 span {
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .tagline {
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-top: 12px;
+    font-style: italic;
+  }
+
+  .contact-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 20px;
+    margin-top: 20px;
+  }
+  .contact-row a, .contact-row span {
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 11.5px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: color 0.2s;
+  }
+  .contact-row a:hover { color: var(--accent); }
+  .contact-row a svg, .contact-row span svg { flex-shrink: 0; }
+
+  /* ── MAIN GRID ── */
+  .main-grid {
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    gap: 0;
+    margin-top: 48px;
+  }
+
+  /* ── SIDEBAR ── */
+  .sidebar {
+    padding-right: 40px;
+    border-right: 1px solid var(--border);
+  }
+
+  /* ── CONTENT ── */
+  .content {
+    padding-left: 48px;
+  }
+
+  /* ── SECTION ── */
+  .section {
+    margin-bottom: 44px;
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeUp 0.6s ease forwards;
+  }
+  .section:nth-child(1) { animation-delay: 0.2s; }
+  .section:nth-child(2) { animation-delay: 0.3s; }
+  .section:nth-child(3) { animation-delay: 0.4s; }
+  .section:nth-child(4) { animation-delay: 0.5s; }
+  .section:nth-child(5) { animation-delay: 0.6s; }
+  .section:nth-child(6) { animation-delay: 0.7s; }
+  .section:nth-child(7) { animation-delay: 0.8s; }
+
+  .section-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .section-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* ── ABOUT ── */
+  .about-text {
+    font-size: 12.5px;
+    color: var(--text-muted);
+    line-height: 1.75;
+  }
+  .about-text strong { color: var(--text); font-weight: 500; }
+
+  /* ── INTERESTS ── */
+  .interest-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 12px;
+    border-radius: 4px;
+    background: rgba(0,212,255,0.06);
+    border: 1px solid rgba(0,212,255,0.18);
+    font-size: 11px;
+    color: var(--accent);
+    margin: 0 4px 6px 0;
+    transition: all 0.2s;
+  }
+  .interest-pill:hover {
+    background: rgba(0,212,255,0.12);
+    border-color: var(--accent);
+    box-shadow: 0 0 16px var(--glow);
+  }
+
+  /* ── SKILLS ── */
+  .skill-group { margin-bottom: 16px; }
+  .skill-group-name {
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+  }
+  .skill-tags { display: flex; flex-wrap: wrap; gap: 4px; }
+  .skill-tag {
+    padding: 3px 9px;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    font-size: 10.5px;
+    color: var(--text);
+    transition: all 0.18s;
+    cursor: default;
+  }
+  .skill-tag:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: rgba(0,212,255,0.05);
+  }
+
+  /* ── EDUCATION ── */
+  .edu-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px;
+    position: relative;
+    overflow: hidden;
+  }
+  .edu-card::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 3px;
+    background: linear-gradient(to bottom, var(--accent), var(--accent2));
+    border-radius: 3px 0 0 3px;
+  }
+  .edu-degree {
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .edu-school {
+    font-size: 11px;
+    color: var(--accent);
+    margin-top: 3px;
+  }
+  .edu-meta {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 8px;
+    font-size: 10.5px;
+    color: var(--text-muted);
+  }
+  .gpa {
+    color: var(--accent3);
+    font-weight: 500;
+  }
+
+  /* ── AWARDS ── */
+  .award-item {
+    display: flex;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .award-item:last-child { border-bottom: none; }
+  .award-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+    background: linear-gradient(135deg, rgba(255,79,155,0.2), rgba(123,79,255,0.2));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 14px;
+  }
+  .award-name { font-size: 12px; color: var(--text); line-height: 1.4; }
+  .award-org { font-size: 10.5px; color: var(--text-muted); margin-top: 2px; }
+
+  /* ── LANGUAGES ── */
+  .lang-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+  .lang-name { width: 80px; font-size: 12px; color: var(--text); }
+  .lang-bar-wrap {
+    flex: 1;
+    height: 3px;
+    background: var(--bg3);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  .lang-bar {
+    height: 100%;
+    border-radius: 3px;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    width: 0;
+    transition: width 1.2s ease 0.5s;
+  }
+  .lang-level { font-size: 10px; color: var(--text-muted); width: 70px; text-align: right; }
+
+  /* ── PROJECT CARDS ── */
+  .project-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 14px;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.25s, transform 0.25s;
+  }
+  .project-card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(0,212,255,0.04), transparent 60%);
+    pointer-events: none;
+  }
+  .project-card:hover {
+    border-color: rgba(0,212,255,0.4);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 32px rgba(0,212,255,0.1);
+  }
+
+  .project-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 8px;
+  }
+  .project-name {
+    font-family: 'Syne', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1.3;
+  }
+  .project-date {
+    font-size: 10px;
+    color: var(--text-muted);
+    white-space: nowrap;
+    margin-top: 3px;
+    letter-spacing: 0.05em;
+  }
+  .project-role {
+    font-size: 10.5px;
+    color: var(--accent2);
+    margin-bottom: 10px;
+    letter-spacing: 0.05em;
+  }
+  .project-bullets {
+    list-style: none;
+    padding: 0;
+  }
+  .project-bullets li {
+    font-size: 11.5px;
+    color: var(--text-muted);
+    padding-left: 14px;
+    position: relative;
+    margin-bottom: 4px;
+    line-height: 1.6;
+  }
+  .project-bullets li::before {
+    content: '›';
+    position: absolute;
+    left: 0;
+    color: var(--accent);
+  }
+  .badge-row { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 10px; }
+  .badge {
+    font-size: 9.5px;
+    padding: 2px 8px;
+    border-radius: 3px;
+    background: rgba(123,79,255,0.15);
+    border: 1px solid rgba(123,79,255,0.3);
+    color: var(--accent2);
+    letter-spacing: 0.05em;
+  }
+  .badge.highlight {
+    background: rgba(255,79,155,0.15);
+    border-color: rgba(255,79,155,0.35);
+    color: var(--accent3);
+  }
+
+  /* ── EXPERIENCE ── */
+  .exp-item {
+    padding: 0 0 28px 24px;
+    position: relative;
+    border-left: 1px solid var(--border);
+    margin-left: 6px;
+  }
+  .exp-item:last-child { padding-bottom: 0; }
+  .exp-item::before {
+    content: '';
+    position: absolute;
+    left: -5px;
+    top: 6px;
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 10px var(--glow);
+  }
+  .exp-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1.3;
+  }
+  .exp-org { font-size: 11px; color: var(--accent); margin-top: 2px; }
+  .exp-meta {
+    font-size: 10px;
+    color: var(--text-muted);
+    margin-top: 2px;
+    margin-bottom: 10px;
+    display: flex;
+    gap: 14px;
+  }
+  .exp-bullets {
+    list-style: none;
+    padding: 0;
+  }
+  .exp-bullets li {
+    font-size: 11.5px;
+    color: var(--text-muted);
+    padding-left: 14px;
+    position: relative;
+    margin-bottom: 4px;
+    line-height: 1.6;
+  }
+  .exp-bullets li::before {
+    content: '›';
+    position: absolute;
+    left: 0;
+    color: var(--accent2);
+  }
+
+  /* ── ANIMATION ── */
+  @keyframes fadeUp {
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    text-align: center;
+    padding-top: 40px;
+    font-size: 10px;
+    color: var(--text-muted);
+    letter-spacing: 0.2em;
+    border-top: 1px solid var(--border);
+    margin-top: 40px;
+    opacity: 0;
+    animation: fadeUp 0.6s ease forwards 1s;
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 800px) {
+    header { grid-template-columns: 1fr; gap: 24px; }
+    .main-grid { grid-template-columns: 1fr; }
+    .sidebar { padding-right: 0; border-right: none; border-bottom: 1px solid var(--border); padding-bottom: 32px; margin-bottom: 32px; }
+    .content { padding-left: 0; }
+  }
+</style>
+</head>
+<body>
+
+<div class="blob blob-1"></div>
+<div class="blob blob-2"></div>
+<div class="blob blob-3"></div>
+
+<div class="wrapper">
+
+  <header>
+    <div class="avatar-wrap">
+      <img src="profile.jpg" alt="Jeremy Mattathias Mboe">
+    </div>
+
+    <div class="header-text">
+      <div class="label">AI Engineering Student</div>
+      <h1>Jeremy<br><span>Mattathias</span> Mboe</h1>
+      <p class="tagline">// Diffusion Models · Medical AI · Neuromorphic Vision</p>
+      <div class="contact-row">
+        <a href="mailto:jeremymattathiasmboe@gmail.com">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+          jeremymattathiasmboe@gmail.com
+        </a>
+        <a href="https://www.linkedin.com/in/jeremymboe/" target="_blank">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+          linkedin.com/in/jeremymboe
+        </a>
+        <a href="https://github.com/proprophet2503" target="_blank">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+          github.com/proprophet2503
+        </a>
+        <span>
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+          Surabaya, Indonesia
+        </span>
+      </div>
+    </div>
+  </header>
+
+  <div class="main-grid">
+
+    <aside class="sidebar">
+
+      <div class="section">
+        <div class="section-title">About Me</div>
+        <p class="about-text">
+          AI Engineering student at <strong>Institut Teknologi Sepuluh Nopember</strong>, building at the intersection of deep learning and healthcare. I specialize in creating scalable systems for <strong>medical image analysis</strong> and <strong>diagnostic automation</strong>.
+          <br><br>
+          I am deeply passionate about <strong>World Models</strong>:training agents to reason about the future.<strong> Diffusion Models</strong>: for generative synthesis, and applying <strong>AI in Healthcare</strong> to solve real diagnostic challenges.
+          <br><br>
+          My research spans Physics-Informed Neural Networks, Spiking Neural Networks, and Score-Based Generative Models.
+        </p>
+      </div>
+
+      <div class="section">
+        <div class="section-title">Research Interests</div>
+        <span class="interest-pill">🧠 World Models</span>
+        <span class="interest-pill">🌊 Diffusion Models</span>
+        <span class="interest-pill">🏥 AI in Healthcare</span>
+        <span class="interest-pill">🔬 Geometric Deep Learning</span>
+        <span class="interest-pill">⚡ Neuromorphic Vision</span>
+        <span class="interest-pill">📡 Flow Matching</span>
+        <span class="interest-pill">🧬 Protein Folding</span>
+      </div>
+
+      <div class="section">
+        <div class="section-title">Skills</div>
+        <div class="skill-group">
+          <div class="skill-group-name">Languages</div>
+          <div class="skill-tags">
+            <span class="skill-tag">Python</span>
+            <span class="skill-tag">C++</span>
+            <span class="skill-tag">SQL</span>
+            <span class="skill-tag">PostgreSQL</span>
+          </div>
+        </div>
+        <div class="skill-group">
+          <div class="skill-group-name">AI / ML</div>
+          <div class="skill-tags">
+            <span class="skill-tag">PyTorch</span>
+            <span class="skill-tag">TensorFlow</span>
+            <span class="skill-tag">Scikit-Learn</span>
+            <span class="skill-tag">LSTM</span>
+            <span class="skill-tag">YOLOv8</span>
+            <span class="skill-tag">Diffusion</span>
+            <span class="skill-tag">Flow Matching</span>
+            <span class="skill-tag">SNN</span>
+            <span class="skill-tag">CNF</span>
+          </div>
+        </div>
+        <div class="skill-group">
+          <div class="skill-group-name">Specialized</div>
+          <div class="skill-tags">
+            <span class="skill-tag">EEG Signal Processing</span>
+            <span class="skill-tag">Audio Processing</span>
+            <span class="skill-tag">PINNs</span>
+            <span class="skill-tag">Computer Vision</span>
+          </div>
+        </div>
+        <div class="skill-group">
+          <div class="skill-group-name">Tools</div>
+          <div class="skill-tags">
+            <span class="skill-tag">Git</span>
+            <span class="skill-tag">Hugging Face</span>
+            <span class="skill-tag">Gradio</span>
+            <span class="skill-tag">ROS</span>
+            <span class="skill-tag">OpenCV</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">Education</div>
+        <div class="edu-card">
+          <div class="edu-degree">B.Eng. Artificial Intelligence</div>
+          <div class="edu-school">Institut Teknologi Sepuluh Nopember</div>
+          <div class="edu-meta">
+            <span>Aug 2024 – Present</span>
+            <span class="gpa">GPA: 3.86 / 4.00</span>
+          </div>
+          <div style="font-size:10px;color:var(--text-muted);margin-top:6px;line-height:1.5">
+            Probability & Statistics · Computational Intelligence · Data Mining · Machine Learning
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">Awards</div>
+        <div class="award-item">
+          <div class="award-icon">🥇</div>
+          <div>
+            <div class="award-name">1st Place & Best Scientific Paper : National Electrolympic UPNVJ 2025</div>
+            <div class="award-org">TB Cough Detection System · Dec 2025</div>
+          </div>
+        </div>
+        <div class="award-item">
+          <div class="award-icon">🏆</div>
+          <div>
+            <div class="award-name">1st Place : Gemastik 2025 (IoT & Software Dev)</div>
+            <div class="award-org">Institut Teknologi Sepuluh Nopember</div>
+          </div>
+        </div>
+        <div class="award-item">
+          <div class="award-icon">🌟</div>
+          <div>
+            <div class="award-name">AIDeaNation 2025 Winner</div>
+            <div class="award-org">BRIN : Medical AI Innovation</div>
+          </div>
+        </div>
+        <div class="award-item">
+          <div class="award-icon">🏅</div>
+          <div>
+            <div class="award-name">Top 50 Social Project : Innovillage 2025</div>
+            <div class="award-org">Telkom Indonesia</div>
+          </div>
+        </div>
+        <div class="award-item">
+          <div class="award-icon">🥈</div>
+          <div>
+            <div class="award-name">2nd Place : Physics Competition</div>
+            <div class="award-org">Parahyangan University · Oct 2022</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">Languages</div>
+        <div class="lang-row">
+          <span class="lang-name">Indonesian</span>
+          <div class="lang-bar-wrap"><div class="lang-bar" data-width="100"></div></div>
+          <span class="lang-level">Native</span>
+        </div>
+        <div class="lang-row">
+          <span class="lang-name">English</span>
+          <div class="lang-bar-wrap"><div class="lang-bar" data-width="88"></div></div>
+          <span class="lang-level">Professional</span>
+        </div>
+      </div>
+
+    </aside>
+    <main class="content">
+
+      <div class="section">
+        <div class="section-title">Projects & Research</div>
+
+        <div class="project-card">
+          <div class="project-header">
+            <div>
+              <div class="project-name">SwaraTTS: Divergence Latent Flow Matching</div>
+              <div class="project-date">02/2026 – Present</div>
+            </div>
+          </div>
+          <div class="project-role">Deep Learning Researcher · Avalon AI × RISTEK UI</div>
+          <ul class="project-bullets">
+            <li>Built a low-latency neural speech synthesis system within a multidisciplinary team.</li>
+            <li>Implemented Score-Based Diffusion Models and Latent Flow Matching (LFM) to optimize the generative trajectory of neural speech.</li>
+            <li>Explored trade-offs between Continuous Normalizing Flows (CNF) and diffusion-based paradigms for SOTA sampling efficiency.</li>
+          </ul>
+          <div class="badge-row">
+            <span class="badge">Flow Matching</span><span class="badge">Diffusion</span><span class="badge">TTS</span><span class="badge">CNF</span>
+          </div>
+        </div>
+
+        <div class="project-card">
+          <div class="project-header">
+            <div>
+              <div class="project-name">Foundational Neuromorphic Vision Research</div>
+              <div class="project-date">04/2026 – Present</div>
+            </div>
+          </div>
+          <div class="project-role">AI Research Assistant · Avalon AI Corporation</div>
+          <ul class="project-bullets">
+            <li>Researching Spiking Neural Networks (SNN) for image classification using Izhikevich neuron dynamics and temporal encoding.</li>
+            <li>Engineered a custom SNN training pipeline in PyTorch from scratch with surrogate gradient functions, temporal encoders, and spike-based layers.</li>
+          </ul>
+          <div class="badge-row">
+            <span class="badge">SNN</span><span class="badge">Neuromorphic</span><span class="badge">PyTorch</span><span class="badge">Izhikevich</span>
+          </div>
+        </div>
+
+        <div class="project-card">
+          <div class="project-header">
+            <div>
+              <div class="project-name">Physics-Informed Lung Reconstruction & TB Cavity Segmentation</div>
+              <div class="project-date">04/2026 – Present</div>
+            </div>
+          </div>
+          <div class="project-role">Deep Learning Researcher · Multimodal TB Active Case Finding Project</div>
+          <ul class="project-bullets">
+            <li>Developing a pipeline for 3D CT Reconstruction from Triplanar X-rays (AP, PA, Lateral) to automate TB diagnostic screening.</li>
+            <li>Researched PINNs and Neural Attenuation Fields (NAF) to parameterize the Beer-Lambert law, solving the ill-posed inverse problem of sparse-view tomography.</li>
+          </ul>
+          <div class="badge-row">
+            <span class="badge">PINNs</span><span class="badge">3D Reconstruction</span><span class="badge">NAF</span><span class="badge highlight">Medical AI</span>
+          </div>
+        </div>
+
+        <div class="project-card">
+          <div class="project-header">
+            <div>
+              <div class="project-name">Multimodal TB Cough Detection & Diagnostic System</div>
+              <div class="project-date">08/2025 – Present</div>
+            </div>
+          </div>
+          <div class="project-role">Machine Learning Developer</div>
+          <ul class="project-bullets">
+            <li>Built an AI-driven TB detection system using LSTM integrated with acoustic signal processing.</li>
+            <li>Designed a cross-modal system combining Direction of Arrival (DoA) audio tracking with visual pose detection.</li>
+            <li>🥇 1st Place & Best Scientific Paper : National Electrolympic UPNVJ 2025.</li>
+            <li>🏆 1st Place Gemastik 2025 · Winner AIDeaNation 2025 (BRIN).</li>
+          </ul>
+          <div class="badge-row">
+            <span class="badge">LSTM</span><span class="badge">Audio DSP</span><span class="badge">DoA</span><span class="badge highlight">🏆 Award-Winning</span>
+          </div>
+        </div>
+
+        <div class="project-card">
+          <div class="project-header">
+            <div>
+              <div class="project-name">EEG Signal Analysis & Binary Encoding for ALS Detection</div>
+              <div class="project-date">01/2026 – Present</div>
+            </div>
+          </div>
+          <div class="project-role">AI Researcher · Pusat Studi Kecerdasan Artifisial</div>
+          <ul class="project-bullets">
+            <li>Engineered an end-to-end pipeline classifying ALS vs. Normal from 1,809 clinical EDF recordings.</li>
+            <li>Developed specialized feature extraction across Delta–Gamma subbands computing MAV, Variance, STD.</li>
+          </ul>
+          <div class="badge-row">
+            <span class="badge">EEG</span><span class="badge">Signal Processing</span><span class="badge">ALS</span><span class="badge highlight">Medical AI</span>
+          </div>
+        </div>
+
+        <div class="project-card">
+          <div class="project-header">
+            <div>
+              <div class="project-name">Oil Palm Tree Health Detection from Aerial Imagery</div>
+              <div class="project-date">06/2025 – 08/2025</div>
+            </div>
+          </div>
+          <div class="project-role">Deep Learning Researcher</div>
+          <ul class="project-bullets">
+            <li>Led large-scale annotation of aerial imagery, labeling hundreds of palm trees per high-resolution image.</li>
+            <li>Applied NDVI masking for semantic health labeling and deployed YOLOv8s + ResNet-18 pipeline on Hugging Face Spaces.</li>
+          </ul>
+          <div class="badge-row">
+            <span class="badge">YOLOv8</span><span class="badge">ResNet</span><span class="badge">NDVI</span><span class="badge">HuggingFace</span>
+          </div>
+        </div>
+
+        <div class="project-card">
+          <div class="project-header">
+            <div>
+              <div class="project-name">CodeSight: Tactile Programming for the Visually Impaired</div>
+              <div class="project-date">10/2025 – 01/2026</div>
+            </div>
+          </div>
+          <div class="project-role">Computer Vision Developer · LIDM</div>
+          <ul class="project-bullets">
+            <li>Developed an assistive tool translating physical flowchart blocks into executable code using YOLOv8 and OpenCV.</li>
+          </ul>
+          <div class="badge-row">
+            <span class="badge">YOLOv8</span><span class="badge">OpenCV</span><span class="badge">Assistive Tech</span>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="section">
+        <div class="section-title">Experience</div>
+
+        <div class="exp-item">
+          <div class="exp-title">Research Assistant : AI Division</div>
+          <div class="exp-org">Prognostic & Diagnostic Laboratory (P&D Lab)</div>
+          <div class="exp-meta"><span>Feb 2026 – Present</span><span>Surabaya, Indonesia</span></div>
+          <ul class="exp-bullets">
+            <li>Developing a 3D CT Reconstruction pipeline from triplanar X-rays using PINNs for TB diagnostic imaging.</li>
+            <li>Built an automated TB Cough Diagnostic System utilizing LSTM and acoustic feature extraction for clinical screening.</li>
+          </ul>
+        </div>
+
+        <div class="exp-item">
+          <div class="exp-title">Expert Staff, Data Science Sub-Division</div>
+          <div class="exp-org">Schematics 2025 · Institut Teknologi Sepuluh Nopember</div>
+          <div class="exp-meta"><span>Mar 2026 – Present</span><span>Surabaya, Indonesia</span></div>
+          <ul class="exp-bullets">
+            <li>Appointed as early staff for a newly formed division; defined technical standards and competition structures for national-level data science events.</li>
+          </ul>
+        </div>
+
+        <div class="exp-item">
+          <div class="exp-title">Probability & Statistics Teaching Assistant</div>
+          <div class="exp-org">Department of Informatics, Institut Teknologi Sepuluh Nopember</div>
+          <div class="exp-meta"><span>Feb 2026 – Present</span><span>Surabaya, Indonesia</span></div>
+          <ul class="exp-bullets">
+            <li>Facilitated student learning in Probability Theory, Statistical Inference, and Stochastic Processes.</li>
+          </ul>
+        </div>
+
+        <div class="exp-item">
+          <div class="exp-title">Software Developer Intern</div>
+          <div class="exp-org">Pusat Studi Kecerdasan Artificial dan Teknologi Digital, ITS</div>
+          <div class="exp-meta"><span>Jan 2026 – Feb 2026</span><span>Surabaya, Indonesia</span></div>
+          <ul class="exp-bullets">
+            <li>Executed EEG signal preprocessing and multi-dimensional feature extraction on specific channels and frequency bands.</li>
+            <li>Engineered the backend processing pipeline for a 4-person team, integrating signal processing scripts into a web app.</li>
+          </ul>
+        </div>
+
+        <div class="exp-item">
+          <div class="exp-title">IRIS ITS Programming Division Internship</div>
+          <div class="exp-org">Institut Teknologi Sepuluh Nopember</div>
+          <div class="exp-meta"><span>Sep 2024 – Nov 2024</span><span>Surabaya, Indonesia</span></div>
+          <ul class="exp-bullets">
+            <li>Implemented C++ and OpenCV for Computer Vision tasks.</li>
+            <li>Programmed robot movement control in C++ using Robot Operating System (ROS).</li>
+          </ul>
+        </div>
+
+      </div>
+
+    </main>
+  </div>
+
+  <footer>
+    JEREMY MATTATHIAS MBOE &nbsp;·&nbsp; AI ENGINEERING &nbsp;·&nbsp; ITS SURABAYA &nbsp;·&nbsp; 2026
+  </footer>
+
+</div>
+
+<script>
+  // Animate language bars on load
+  window.addEventListener('load', () => {
+    document.querySelectorAll('.lang-bar').forEach(bar => {
+      const w = bar.getAttribute('data-width');
+      setTimeout(() => { bar.style.width = w + '%'; }, 600);
+    });
+  });
+
+  // Intersection observer for subtle re-animations on scroll (for long page)
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) e.target.classList.add('in-view');
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.project-card, .exp-item, .award-item').forEach(el => {
+    observer.observe(el);
+  });
+</script>
+</body>
+</html>
