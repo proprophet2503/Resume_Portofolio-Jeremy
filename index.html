@@ -449,6 +449,28 @@
     margin-bottom: 10px;
     letter-spacing: 0.05em;
   }
+  .project-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 10px;
+    margin-bottom: 10px;
+  }
+  .project-links a,
+  .project-links span {
+    font-size: 10px;
+    color: var(--text-muted);
+    text-decoration: none;
+    padding: 3px 8px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: rgba(0,212,255,0.05);
+    letter-spacing: 0.05em;
+  }
+  .project-links a:hover {
+    color: var(--accent);
+    border-color: rgba(0,212,255,0.5);
+    box-shadow: 0 0 12px var(--glow);
+  }
   .project-bullets {
     list-style: none;
     padding: 0;
@@ -698,20 +720,20 @@
             <div class="award-org">TB Cough Detection System · Dec 2025</div>
           </div>
         </div>
-        <div class="award-item">
+        <!-- <div class="award-item">
           <div class="award-icon">🏆</div>
           <div>
             <div class="award-name">1st Place : Gemastik 2025 (IoT & Software Dev)</div>
             <div class="award-org">Institut Teknologi Sepuluh Nopember</div>
           </div>
-        </div>
-        <div class="award-item">
+        </div> -->
+        <!-- <div class="award-item">
           <div class="award-icon">🌟</div>
           <div>
             <div class="award-name">AIDeaNation 2025 Winner</div>
             <div class="award-org">BRIN : Medical AI Innovation</div>
           </div>
-        </div>
+        </div> -->
         <div class="award-item">
           <div class="award-icon">🏅</div>
           <div>
@@ -756,6 +778,9 @@
             </div>
           </div>
           <div class="project-role">Deep Learning Researcher · Avalon AI × RISTEK UI</div>
+          <div class="project-links">
+            <a href="https://github.com/Avalon-AI-Laboratory/Swara" target="_blank">GitHub</a>
+          </div>
           <ul class="project-bullets">
             <li>Built a low-latency neural speech synthesis system within a multidisciplinary team.</li>
             <li>Implemented Score-Based Diffusion Models and Latent Flow Matching (LFM) to optimize the generative trajectory of neural speech.</li>
@@ -774,6 +799,9 @@
             </div>
           </div>
           <div class="project-role">AI Research Assistant · Avalon AI Corporation</div>
+          <div class="project-links">
+            <span>GitHub: NDA</span>
+          </div>
           <ul class="project-bullets">
             <li>Researching Spiking Neural Networks (SNN) for image classification using Izhikevich neuron dynamics and temporal encoding.</li>
             <li>Engineered a custom SNN training pipeline in PyTorch from scratch with surrogate gradient functions, temporal encoders, and spike-based layers.</li>
@@ -786,11 +814,34 @@
         <div class="project-card">
           <div class="project-header">
             <div>
+              <div class="project-name">AVID-MM: Audio-Visual Identity Disentanglement</div>
+              <div class="project-date">Ongoing</div>
+            </div>
+          </div>
+          <div class="project-role">Multimodal AI Researcher</div>
+          <div class="project-links">
+            <a href="https://github.com/proprophet2503/AVID-MM-Audio-Visual-Identity-Disentanglement-for-Missing-Modality-Speaker-Identification" target="_blank">GitHub</a>
+          </div>
+          <ul class="project-bullets">
+            <li>Developed a robust cross-modal speaker verification system designed to identify individuals in multilingual environments even when one modality (audio or visual) is missing or corrupted.</li>
+            <li>Engineered a multimodal embedding pipeline using ECAPA-TDNN for voice features and pretrained face backbones, achieving a jump from 59% to 93%+ accuracy on the POLY_1 challenge setup.</li>
+          </ul>
+          <div class="badge-row">
+            <span class="badge">Multimodal</span><span class="badge">ECAPA-TDNN</span><span class="badge">Speaker ID</span><span class="badge">Missing Modality</span>
+          </div>
+        </div>
+
+        <div class="project-card">
+          <div class="project-header">
+            <div>
               <div class="project-name">Physics-Informed Lung Reconstruction & TB Cavity Segmentation</div>
               <div class="project-date">04/2026 – Present</div>
             </div>
           </div>
           <div class="project-role">Deep Learning Researcher · Multimodal TB Active Case Finding Project</div>
+          <div class="project-links">
+            <span>GitHub: In progress</span>
+          </div>
           <ul class="project-bullets">
             <li>Developing a pipeline for 3D CT Reconstruction from Triplanar X-rays (AP, PA, Lateral) to automate TB diagnostic screening.</li>
             <li>Researched PINNs and Neural Attenuation Fields (NAF) to parameterize the Beer-Lambert law, solving the ill-posed inverse problem of sparse-view tomography.</li>
@@ -808,6 +859,9 @@
             </div>
           </div>
           <div class="project-role">Machine Learning Developer</div>
+          <div class="project-links">
+            <a href="https://github.com/proprophet2503/TB-Cough-Detection-Model" target="_blank">GitHub</a>
+          </div>
           <ul class="project-bullets">
             <li>Built an AI-driven TB detection system using LSTM integrated with acoustic signal processing.</li>
             <li>Designed a cross-modal system combining Direction of Arrival (DoA) audio tracking with visual pose detection.</li>
@@ -827,6 +881,10 @@
             </div>
           </div>
           <div class="project-role">AI Researcher · Pusat Studi Kecerdasan Artifisial</div>
+          <div class="project-links">
+            <a href="https://github.com/proprophet2503/EEG_BinaryEncoding" target="_blank">GitHub Model</a>
+            <a href="https://github.com/henray404/EEG_web.git" target="_blank">GitHub Web</a>
+          </div>
           <ul class="project-bullets">
             <li>Engineered an end-to-end pipeline classifying ALS vs. Normal from 1,809 clinical EDF recordings.</li>
             <li>Developed specialized feature extraction across Delta–Gamma subbands computing MAV, Variance, STD.</li>
@@ -844,6 +902,9 @@
             </div>
           </div>
           <div class="project-role">Deep Learning Researcher</div>
+          <div class="project-links">
+            <a href="https://github.com/proprophet2503/Deteksi-dan-Klasifikasi-Kesehatan-Pohon-Sawit-Menggunakan-Deep-Learning-pada-Citra-Udara" target="_blank">GitHub</a>
+          </div>
           <ul class="project-bullets">
             <li>Led large-scale annotation of aerial imagery, labeling hundreds of palm trees per high-resolution image.</li>
             <li>Applied NDVI masking for semantic health labeling and deployed YOLOv8s + ResNet-18 pipeline on Hugging Face Spaces.</li>
@@ -861,6 +922,9 @@
             </div>
           </div>
           <div class="project-role">Computer Vision Developer · LIDM</div>
+          <div class="project-links">
+            <a href="https://github.com/proprophet2503/Object-Detection-for-Visually-Impaired-Education" target="_blank">GitHub</a>
+          </div>
           <ul class="project-bullets">
             <li>Developed an assistive tool translating physical flowchart blocks into executable code using YOLOv8 and OpenCV.</li>
           </ul>
